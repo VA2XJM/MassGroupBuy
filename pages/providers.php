@@ -22,7 +22,7 @@
 	<meta name="author" content="">
 
 	<title>MassGroupBuy</title>
-
+	
 	<!-- PrepInventory CSS -->
 	<link href="../dist/css/PrepInventory.css" rel="stylesheet">
 
@@ -63,14 +63,39 @@
 		<div id="page-wrapper">
 			<div class="row">
 				<div class="col-lg-12">
-					<h1 class="page-header">Dashboard</h1>
+					<h1 class="page-header">Providers</h1>
 				</div>
 				<!-- /.col-lg-12 -->
 			</div>
 			<!-- /.row -->
 			<div class="row">
 				<div class="col-lg-12">
-					&nbsp;
+					<!-- CODE -->
+
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							Providers listing.
+						</div>
+						<!-- /.panel-heading -->
+						<div class="panel-body">
+						<a href="providers_add.php" title="Add new provider" alt="Add new provider">Add a new provider</a>
+						<hr>
+							<?php
+								$sql = "SELECT * FROM `providers` ORDER BY `name` ASC";
+								$result = mysqli_query($link, $sql);
+								if (mysqli_num_rows($result) < 1) { print "No provider has been added yet."; }
+								else {
+									while($row = mysqli_fetch_assoc($result)) {
+										print $row["name"] .' <a href="providers_edit.php?id='. $row['pid'] .'"><i class="fa fa-pencil-square fa-fw"></i></a><br>';
+									}
+								}
+							?>
+						</div>
+						<!-- /.panel-body -->
+					</div>
+					<!-- /.panel -->
+
+					<!-- /CODE -->
 				</div>
 				<!-- /.col-lg-12 -->
 			</div>

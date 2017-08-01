@@ -6,7 +6,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="index.php">MassBuyGroup <?PHP print $g_version; ?></a>
+				<a class="navbar-brand" href="index.php">MassGroupBuy <?PHP print $g_version; ?></a>
 			</div>
 			<!-- /.navbar-header -->
 
@@ -19,8 +19,8 @@
 					<ul class="dropdown-menu dropdown-tasks">
 
 						<li>
-							<a class="text-center" href="inventory.php">
-								<strong>See All Items</strong>
+							<a class="text-center" href="orders.php">
+								<strong>See All orders</strong>
 								<i class="fa fa-angle-right"></i>
 							</a>
 						</li>
@@ -91,7 +91,7 @@
 							<a href="#"><i class="fa fa-cubes fa-fw"></i> Items<span class="fa arrow"></span></a>
 							<ul class="nav nav-second-level">
 								<li>
-									<a href="items_items.php">Items</a>
+									<a href="items.php">Items</a>
 								</li>
 								<li>
 									<a href="items_categories.php">Categories</a>
@@ -110,15 +110,6 @@
 								</li>
 								<li>
 									<a href="providers_add.php">New provider</a>
-								</li>
-							</ul>
-							<!-- /.nav-second-level -->
-						</li>
-						<li>
-							<a href="#"><i class="fa fa-terminal fa-fw"></i> Applications<span class="fa arrow"></span></a>
-							<ul class="nav nav-second-level">
-								<li>
-									<a href="reloading.php">Ammo Reloading</a>
 								</li>
 							</ul>
 							<!-- /.nav-second-level -->
