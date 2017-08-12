@@ -91,6 +91,21 @@
 							<!-- /.nav-second-level -->
 						</li>
 						<li>
+							<a href="#"><i class="fa fa-usd fa-fw"></i> Price Tracker<span class="fa arrow"></span></a>
+							<ul class="nav nav-second-level">
+								<li>
+									<a href="pricetracker.php">By items</a>
+								</li>
+								<li>
+									<a href="pricetracker_cat.php">By categories</a>
+								</li>
+								<li>
+									<a href="pricetracker_prov.php">By providers</a>
+								</li>
+							</ul>
+							<!-- /.nav-second-level -->
+						</li>
+						<li>
 							<a href="#"><i class="fa fa-cubes fa-fw"></i> Items<span class="fa arrow"></span></a>
 							<ul class="nav nav-second-level">
 								<li>
