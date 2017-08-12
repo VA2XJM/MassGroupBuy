@@ -21,6 +21,10 @@
 		else {
 			while($row = mysqli_fetch_assoc($result)) {
 				$name = $row['name'];
+				$website = $row['website'];
+				$address = $row['address'];
+				$phone = $row['phone'];
+				$note = $row['notes'];
 			}
 		}
 	}
@@ -35,7 +39,24 @@
 				$panel_type = 'panel-danger';
 				$panel_notice = "Error: Name contain illegal character(s).";
 			}
-			else {
+			if (!empty($_POST['website']) && filter_var($_POST['website'], FILTER_VALIDATE_URL) == false) { 
+				$panel_type = 'panel-danger';
+				$panel_notice .= "Error: Website contain illegal character(s). ";
+			}
+			if (!empty($_POST['address']) && !preg_match('!^[\w \.\/\-\r\n]*$!', $_POST['address'])) { 
+				$panel_type = 'panel-danger';
+				$panel_notice .= "Error: Address contain illegal character(s). ";
+			}
+			if (!empty($_POST['phone']) && !preg_match('!^[\w /-]*$!', $_POST['phone'])) { 
+				$panel_type = 'panel-danger';
+				$panel_notice .= "Error: Phone contain illegal character(s). ";
+			}
+			if (!empty($_POST['note']) && !preg_match('!^[\w \.\/\-\r\n]*$!', $_POST['note'])) { 
+				$panel_type = 'panel-danger';
+				$panel_notice .= "Error: Note contain illegal character(s). ";
+			}
+
+			if ($panel_type == 'panel-default' && !empty($_POST['name'])) {
 				# Check for id level and ID. Check sanity.
 				$id_id = $_REQUEST['id'];
 
@@ -46,10 +67,14 @@
 					if (mysqli_num_rows($result) < 1) { $panel_type = 'panel-danger'; $panel_notice = "ERROR: wrong ID."; }
 					else {
 						$name = $_POST['name'];
+						$website = isset($_POST['website']) ? $_POST['website'] : '';
+						$address = isset($_POST['address']) ? $_POST['address'] : '';
+						$phone = isset($_POST['phone']) ? $_POST['phone'] : '';
+						$note = isset($_POST['note']) ? $_POST['note'] : '';
 						
 						# Execute MySQL. If there is not error show green panel and notification.
 						# Else show red panel and error notification.
-						$sql = "UPDATE `providers` SET `name`='$name' WHERE `pid`='$id_id'";
+						$sql = "UPDATE `providers` SET `name`='$name', `website`='$website', `address`='$address', `phone`='$phone', `notes`='$note' WHERE `pid`='$id_id'";
 						$result = mysqli_query($link, $sql);
 						if ($result) {
 							$panel_type = 'panel-success';
@@ -57,7 +82,7 @@
 						}
 						else {
 							$panel_type = 'panel-danger';
-							$panel_notice = "Error: Can't change unit.";
+							$panel_notice = "Error: Can't change provider.";
 						}
 					}
 				}
@@ -125,22 +150,38 @@
 					<!-- CODE -->
 					
 					<div class="panel <?PHP print $panel_type; ?>">
-					<div class="panel-heading">
-						Edit unit
-					</div>
-					<div class="panel-body">
-						<form role="form" method="post">
-							<?PHP if (!empty($panel_notice)) { print "<div>$panel_notice</div><br>"; } ?>
-							<div class="form-group">
-								<input class="form-control" placeholder="Name" name="name" value="<?PHP if (!empty($name)) { print $name; } ?>">
-								<p class="help-block">Name is mandatory. A-Z, a-z, 0-9, - and space.</p>
-							</div>
-							<div class="form-group">
-								<input class="form-control" type="hidden" placeholder="" name="id" value="<?PHP if (!empty($_REQUEST['id'])) { print $_REQUEST['id']; } ?>" disabled>
-							</div>
-							<button type="submit" class="btn btn-default">Submit</button>
-						</form>
-					</div>
+						<div class="panel-heading">
+							Edit unit
+						</div>
+						<div class="panel-body">
+							<form role="form" method="post">
+								<?PHP if (!empty($panel_notice)) { print "<div>$panel_notice</div><br>"; } ?>
+								<div class="form-group">
+									<input class="form-control" placeholder="Name" name="name" value="<?PHP if (!empty($name)) { print $name; } ?>">
+									<p class="help-block">Name is mandatory. A-Z, a-z, 0-9, - and space.</p>
+								</div>
+								<div class="form-group">
+									<input class="form-control" placeholder="Website" name="website" value="<?PHP if (!empty($website)) { print $website; } ?>">
+									<p class="help-block">ex: http://google.ca or https://exemple.google.ca/details</p>
+								</div>
+								<div class="form-group">
+									<label>Address:</label>
+									<textarea name="address" class="form-control"><?PHP if (!empty($address)) { print $address; } ?></textarea>
+								</div>
+								<div class="form-group">
+									<input class="form-control" placeholder="Phone" name="phone" value="<?PHP if (!empty($phone)) { print $phone; } ?>">
+									<p class="help-block">ex: 555-555-5555</p>
+								</div>
+								<div class="form-group">
+									<label>Note:</label>
+									<textarea name="note" class="form-control"><?PHP if (!empty($note)) { print $note; } ?></textarea>
+								</div>
+								<div class="form-group">
+									<input class="form-control" type="hidden" placeholder="" name="id" value="<?PHP if (!empty($_REQUEST['id'])) { print $_REQUEST['id']; } ?>" disabled>
+								</div>
+								<button type="submit" class="btn btn-default">Submit</button>
+							</form>
+						</div>
 					</div>
 					<!-- /CODE -->
 				</div>

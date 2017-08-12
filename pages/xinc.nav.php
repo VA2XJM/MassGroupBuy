@@ -82,6 +82,9 @@
 									<a href="orders_close.php">Closed Orders</a>
 								</li>
 								<li>
+									<a href="orders_done.php">Done Orders</a>
+								</li>
+								<li>
 									<a href="orders_new.php">New Orders</a>
 								</li>
 							</ul>
@@ -95,9 +98,6 @@
 								</li>
 								<li>
 									<a href="items_categories.php">Categories</a>
-								</li>
-								<li>
-									<a href="items_units.php">Units</a>
 								</li>
 							</ul>
 							<!-- /.nav-second-level -->

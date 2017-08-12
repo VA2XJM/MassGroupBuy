@@ -12,20 +12,42 @@
 	
 	# Submission
 	$panel_type = 'panel-default';
+	$panel_notice = '';
 	# Is name empty? if not proceed, otherwise show red panel.
 	if (empty($_POST['name'])) { $panel_type = 'panel-default'; }
 	else {
 		# if name is set and match 'A-Z, a-z, 0-9, - and space' proceed. Otherwise show red panel.
 		if (!preg_match('!^[\w /-]*$!', $_POST['name'])) { 
 			$panel_type = 'panel-danger';
-			$panel_notice = "Error: Name contain illegal character(s).";
+			$panel_notice .= "Error: Name contain illegal character(s). ";
 		}
-		else {
+		if (!empty($_POST['website']) && filter_var($_POST['website'], FILTER_VALIDATE_URL) == false) { 
+			$panel_type = 'panel-danger';
+			$panel_notice .= "Error: Website contain illegal character(s). ";
+		}
+		if (!empty($_POST['address']) && !preg_match('!^[\w \.\/\-\r\n]*$!', $_POST['address'])) { 
+			$panel_type = 'panel-danger';
+			$panel_notice .= "Error: Address contain illegal character(s). ";
+		}
+		if (!empty($_POST['phone']) && !preg_match('!^[\w /-]*$!', $_POST['phone'])) { 
+			$panel_type = 'panel-danger';
+			$panel_notice .= "Error: Phone contain illegal character(s). ";
+		}
+		if (!empty($_POST['note']) && !preg_match('!^[\w \.\/\-\r\n]*$!', $_POST['note'])) { 
+			$panel_type = 'panel-danger';
+			$panel_notice .= "Error: Note contain illegal character(s). ";
+		}
+
+		if ($panel_type == 'panel-default' && !empty($_POST['name'])) {
 			$name = $_POST['name'];
+			$website = isset($_POST['website']) ? $_POST['website'] : '';
+			$address = isset($_POST['address']) ? $_POST['address'] : '';
+			$phone = isset($_POST['phone']) ? $_POST['phone'] : '';
+			$note = isset($_POST['note']) ? $_POST['note'] : '';
 			
 			# Execute MySQL. If there is not error show green panel and notification.
 			# Else show red panel and error notification.
-			$sql = "INSERT INTO `providers` (`pid`, `name`, `website`, `address`, `phone`, `notes`, `hide`) VALUES (NULL, '$name', '', '', '', '', '0')";
+			$sql = "INSERT INTO `providers` (`pid`, `name`, `website`, `address`, `phone`, `notes`, `hide`) VALUES (NULL, '$name', '$website', '$address', '$phone', '$note', '0')";
 			$result = mysqli_query($link, $sql);
 			if ($result) {
 				$panel_type = 'panel-success';
@@ -101,19 +123,35 @@
 					<!-- CODE -->
 					
 					<div class="panel <?PHP print $panel_type; ?>">
-					<div class="panel-heading">
-						Add a new provider
-					</div>
-					<div class="panel-body">
-						<form role="form" method="post">
-							<?PHP if (!empty($panel_notice)) { print "<div>$panel_notice</div><br>"; } ?>
-							<div class="form-group">
-								<input class="form-control" placeholder="Name" name="name">
-								<p class="help-block">Name is mandatory. A-Z, a-z, 0-9, -, / and space.</p>
-							</div>
-							<button type="submit" class="btn btn-default">Submit</button>
-						</form>
-					</div>
+						<div class="panel-heading">
+							Add a new provider
+						</div>
+						<div class="panel-body">
+							<form role="form" method="post">
+								<?PHP if (!empty($panel_notice)) { print "<div>$panel_notice</div><br>"; } ?>
+								<div class="form-group">
+									<input class="form-control" placeholder="Name" name="name">
+									<p class="help-block">Name is mandatory. A-Z, a-z, 0-9, -, / and space.</p>
+								</div>
+								<div class="form-group">
+									<input class="form-control" placeholder="Website" name="website">
+									<p class="help-block">ex: http://google.ca or https://exemple.google.ca/details</p>
+								</div>
+								<div class="form-group">
+									<label>Address:</label>
+									<textarea name="address" class="form-control"></textarea>
+								</div>
+								<div class="form-group">
+									<input class="form-control" placeholder="Phone" name="phone">
+									<p class="help-block">ex: 555-555-5555</p>
+								</div>
+								<div class="form-group">
+									<label>Note:</label>
+									<textarea name="note" class="form-control"></textarea>
+								</div>
+								<button type="submit" class="btn btn-default">Submit</button>
+							</form>
+						</div>
 					</div>
 					<!-- /CODE -->
 				</div>
