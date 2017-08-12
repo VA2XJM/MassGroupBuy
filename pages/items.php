@@ -86,7 +86,7 @@
 								if (mysqli_num_rows($result) < 1) { print "No item has been added yet."; }
 								else {
 									while($row = mysqli_fetch_assoc($result)) {
-										print $row["name"] . ' <a href="items_edit.php?id='. $row['iid'] .'"><i class="fa fa-pencil-square fa-fw"></i></a><br>';
+										print $row["name"] . ' <a href="items_edit.php?id='. $row['iid'] .'"><i class="fa fa-pencil-square fa-fw"></i></a> &emsp; <a href="pricetracker_item.php?id='. $row['iid'] .'"><i class="fa fa-usd fa-fw"></i></a><br>';
 									}
 								}
 							?>

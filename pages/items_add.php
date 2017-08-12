@@ -23,12 +23,13 @@
 		}
 		else {
 			$name = $_POST['name'];
+			$cid = $_POST['category'];
 			if (!empty($_POST['details'])) { $details = $_POST['details']; }
 			else { $details = ''; }
 			
 			# Execute MySQL. If there is not error show green panel and notification.
 			# Else show red panel and error notification.
-			$sql = "INSERT INTO `items` (`iid`, `name`, `details`, `cat`, `hide`) VALUES (NULL, '$name', '$details', '0', '0')";
+			$sql = "INSERT INTO `items` (`iid`, `name`, `details`, `cat`, `hide`) VALUES (NULL, '$name', '$details', '$cid', '0')";
 			$result = mysqli_query($link, $sql);
 			if ($result) {
 				$panel_type = 'panel-success';
@@ -113,6 +114,22 @@
 							</div>
 							<div class="form-group">
 								<input class="form-control" placeholder="Details" name="details" autocomplete="off">
+							</div>
+							<div class="form-group">
+								<label>Category</label>
+								<select class="form-control" name="category">
+									<option value="">-</option>
+									<?php
+										$sql = "SELECT * FROM `category` ORDER BY `name` ASC";
+										$result = mysqli_query($link, $sql);
+										if (mysqli_num_rows($result) < 1) { print ""; }
+										else {
+											while($row = mysqli_fetch_assoc($result)) {
+												print '<option value="'. $row["cid"] .'">' . $row["name"] . '</option>';
+											}
+										}
+									?>
+								</select>
 							</div>
 							<button type="submit" class="btn btn-default">Submit</button>
 						</form>

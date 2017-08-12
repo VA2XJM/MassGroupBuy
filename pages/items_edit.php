@@ -23,6 +23,7 @@
 				while($row = mysqli_fetch_assoc($result)) {
 					$name = $row['name'];
 					$details = $row['details'];
+					$cid = $row['cat'];
 				}
 			}
 		}
@@ -51,12 +52,13 @@
 					if (mysqli_num_rows($result) < 1) { $panel_type = 'panel-danger'; $panel_notice = "ERROR: wrong ID."; }
 					else {
 						$name = $_POST['name'];
+						$cid = $_POST['category'];
 						if (!empty($_POST['details'])) { $details = $_POST['details']; }
 						else { $details = ''; }
 						
 						# Execute MySQL. If there is not error show green panel and notification.
 						# Else show red panel and error notification.
-						$sql = "UPDATE `items` SET `name`='$name', `details`='$details' WHERE `iid`='$id_id'";
+						$sql = "UPDATE `items` SET `name`='$name', `details`='$details', `cat`='$cid' WHERE `iid`='$id_id'";
 						$result = mysqli_query($link, $sql);
 						if ($result) {
 							$panel_type = 'panel-success';
@@ -144,6 +146,23 @@
 							</div>
 							<div class="form-group">
 								<input class="form-control" placeholder="Details" name="details" autocomplete="off" value="<?PHP if (!empty($details)) { print $details; } ?>">
+							</div>
+							<div class="form-group">
+								<label>Category</label>
+								<select class="form-control" name="category">
+									<option value="0">-</option>
+									<?php
+										$sql = "SELECT * FROM `category` ORDER BY `name` ASC";
+										$result = mysqli_query($link, $sql);
+										if (mysqli_num_rows($result) < 1) { print ""; }
+										else {
+											while($row = mysqli_fetch_assoc($result)) {
+												if ($cid == $row['cid']) { print '<option value="'. $row["cid"] .'" selected="selected">' . $row["name"] . '</option>'; }
+												else { print '<option value="'. $row["cid"] .'">' . $row["name"] . '</option>'; }
+											}
+										}
+									?>
+								</select>
 							</div>
 							<button type="submit" class="btn btn-default">Submit</button>
 						</form>
