@@ -9,6 +9,19 @@
 		header('location:login.php');
 		die();
 	}
+	
+	$sql = "SELECT * FROM `category` ORDER BY `name` ASC";
+	$result = mysqli_query($link, $sql);
+	if (mysqli_num_rows($result) < 1) { $catfilter = 'No category to display.'; }
+	else {
+		$filter = '';
+		while($rowx = mysqli_fetch_assoc($result)) {
+			$fcid = $rowx['cid'];
+			$fcname = $rowx['name'];
+			if (!empty($filter)) { $filter .= " - "; }
+			$filter .= '<a href="pricetracker_cat.php?id='.$fcid.'">'.$fcname.'</a>';
+		}
+	}
 ?>
 
 <!DOCTYPE html>
@@ -65,7 +78,7 @@
 		<div id="page-wrapper">
 			<div class="row">
 				<div class="col-lg-12">
-					<h1 class="page-header">Price Tracker - Items</h1>
+					<h1 class="page-header">Price Tracker - Categories</h1>
 				</div>
 				<!-- /.col-lg-12 -->
 			</div>
@@ -80,57 +93,68 @@
 						</div>
 						<!-- /.panel-heading -->
 						<div class="panel-body">
+							<center><?PHP print $filter; ?></center>
 							<?php
 								$data = '';
-								$sql = "SELECT * FROM `items` ORDER BY `name` ASC";
+								$sql = "SELECT * FROM `category` ORDER BY `name` ASC";
+								if (!empty($_GET['id'])) { $fid = $_GET['id']; $sql = "SELECT * FROM `category` WHERE `cid` = '$fid'"; }
 								$result = mysqli_query($link, $sql);
 								if (mysqli_num_rows($result) < 1) { $data = '<tr><td colspan="6">No data to display.</td></tr>'; }
 								else {
-									while($row = mysqli_fetch_assoc($result)) {
-										$iid = $row['iid'];
-										$item = $row['name'];
-										$details = isset($row['details']) ? $row['details'] : '';
-										$cid = isset($row['cat']) ? $row['cat'] : '';
+									while($rowx = mysqli_fetch_assoc($result)) {
+										$catid = $rowx['cid'];
+										
+										$sql = "SELECT * FROM `items` WHERE `cat` = '$catid' ORDER BY `name` ASC";
+										$result = mysqli_query($link, $sql);
+										if (mysqli_num_rows($result) < 1) { $data = '<tr><td colspan="6">No data to display.</td></tr>'; }
+										else {
+											while($row = mysqli_fetch_assoc($result)) {
+												$iid = $row['iid'];
+												$item = $row['name'];
+												$details = isset($row['details']) ? $row['details'] : '';
+												$cid = isset($row['cat']) ? $row['cat'] : '';
 
-										if (!empty($cid)) {
-											$sql2 = "SELECT * FROM `category` WHERE cid = '". $cid ."'";
-											$result2 = mysqli_query($link, $sql2);
-											if (mysqli_num_rows($result2) > 0) {
-												while($row2 = mysqli_fetch_assoc($result2)) {
-													$cat = $row2['name'];
+												if (!empty($cid)) {
+													$sql2 = "SELECT * FROM `category` WHERE cid = '". $cid ."'";
+													$result2 = mysqli_query($link, $sql2);
+													if (mysqli_num_rows($result2) > 0) {
+														while($row2 = mysqli_fetch_assoc($result2)) {
+															$cat = $row2['name'];
+														}
+													}
 												}
-											}
-										}
-										else { $cat = ""; }
+												else { $cat = ""; }
 
-										$sql2 = "SELECT * FROM `items_price` WHERE iid = '". $iid ."' ORDER BY `unit_price` ASC LIMIT 1";
-										$result2 = mysqli_query($link, $sql2);
-										if (mysqli_num_rows($result2) > 0) {
-											while($row2 = mysqli_fetch_assoc($result2)) {
-												$bestprice = $row2['unit_price'];
-												$bestunit = $row2['unit_desc'];
-												$bppid = $row2['pid'];
-											}
-										}
-										else { $bestprice = '-'; $bestunit = ''; $bestpriceprov = '-'; $bppid = ''; }
-
-										if (!empty($bppid)) {
-											$sql2 = "SELECT * FROM `providers` WHERE pid = '". $bppid ."'";
-											$result2 = mysqli_query($link, $sql2);
-											if (mysqli_num_rows($result2) > 0) {
-												while($row2 = mysqli_fetch_assoc($result2)) {
-													$bestpriceprov = $row2['name'];
+												$sql2 = "SELECT * FROM `items_price` WHERE iid = '". $iid ."' ORDER BY `unit_price` ASC LIMIT 1";
+												$result2 = mysqli_query($link, $sql2);
+												if (mysqli_num_rows($result2) > 0) {
+													while($row2 = mysqli_fetch_assoc($result2)) {
+														$bestprice = $row2['unit_price'];
+														$bestunit = $row2['unit_desc'];
+														$bppid = $row2['pid'];
+													}
 												}
+												else { $bestprice = '-'; $bestunit = ''; $bestpriceprov = '-'; $bppid = ''; }
+
+												if (!empty($bppid)) {
+													$sql2 = "SELECT * FROM `providers` WHERE pid = '". $bppid ."'";
+													$result2 = mysqli_query($link, $sql2);
+													if (mysqli_num_rows($result2) > 0) {
+														while($row2 = mysqli_fetch_assoc($result2)) {
+															$bestpriceprov = $row2['name'];
+														}
+													}
+												}
+												else { $bestpriceprov = "-"; }
+
+												$sql2 = "SELECT AVG(unit_price) FROM `items_price` WHERE iid = '". $iid ."'";
+												$result2 = mysqli_query($link, $sql2);
+												if (mysqli_num_rows($result2) > 0) { while($row2 = mysqli_fetch_assoc($result2)) { $avgprice = $row2['AVG(unit_price)']; } }
+												if (empty($avgprice)) { $avgprice = "-"; }
+
+												$data .= '<tr><td><a href="pricetracker_item.php?id='.$iid.'">'.$item.'</a></td><td>'.$details.'</td><td>'.$cat.'</td><td>'.$bestprice.'$ '.$bestunit.'</td><td>'.$bestpriceprov.'</td><td>'.$avgprice.'$</td></tr>';
 											}
 										}
-										else { $bestpriceprov = "-"; }
-
-										$sql2 = "SELECT AVG(unit_price) FROM `items_price` WHERE iid = '". $iid ."'";
-										$result2 = mysqli_query($link, $sql2);
-										if (mysqli_num_rows($result2) > 0) { while($row2 = mysqli_fetch_assoc($result2)) { $avgprice = $row2['AVG(unit_price)']; } }
-										if (empty($avgprice)) { $avgprice = "-"; }
-
-										$data .= '<tr><td><a href="pricetracker_item.php?id='.$iid.'">'.$item.'</a></td><td>'.$details.'</td><td>'.$cat.'</td><td>'.$bestprice.'$ '.$bestunit.'</td><td>'.$bestpriceprov.'</td><td>'.$avgprice.'$</td></tr>';
 									}
 								}
 							?>
