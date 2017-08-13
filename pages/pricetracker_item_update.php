@@ -10,12 +10,13 @@
 		die();
 	}
 	
+	$iid = $_GET['iid'];
+	$id = $_GET['id'];
+	
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		if (empty($_POST['price']) || empty($_POST['unit'])) { $notice = '<div class="panel panel-red"><div class="panel-heading">Error: Price & Unit are mandatory</div></div>'; }
 		elseif (!is_numeric($_POST['price']) || !is_numeric($_POST['unit'])) { $notice = '<div class="panel panel-red"><div class="panel-heading">Error: Price & Unit must be numerical</div></div>'; }
 		else {
-			$g_iid = $_GET['id'];
-			$p_pid = $_POST['provider'];
 			$p_price = $_POST['price'];
 			$p_pricedesc = $_POST['pricedesc'];
 			$p_unit  = $_POST['unit'];
@@ -27,10 +28,10 @@
 			
 			# Execute MySQL. If there is not error show green panel and notification.
 			# Else show red panel and error notification.
-			$sql = "INSERT INTO `items_price` (`id`, `iid`, `pid`, `price`, `price_desc`, `unit`, `unit_desc`, `unit_price`, `note`, `url`, `last_update`) VALUES (NULL, '$g_iid', '$p_pid', '$p_price', '$p_pricedesc', '$p_unit', '$p_unitdesc', '$x_unitprice', '$p_note', '$p_url', '$lastupdate')";
+			$sql = "UPDATE `items_price` SET `price`='$p_price', `price_desc`='$p_pricedesc', `unit`='$p_unit', `unit_desc`='$p_unitdesc', `unit_price`='$x_unitprice', `url`='$p_url', `note`='$p_note', `last_update`='$lastupdate' WHERE `id`='$id'";
 			$result = mysqli_query($link, $sql);
-			if ($result) { $notice = '<div class="panel panel-green"><div class="panel-heading">Price has been added.</div></div>'; }
-			else { $notice = '<div class="panel panel-red"><div class="panel-heading">Error: Couldn\'t add new item price.</div></div>'; }
+			if ($result) { $notice = '<div class="panel panel-green"><div class="panel-heading">Details has been updated.</div><div class="panel-footer"><a href="pricetracker_item.php?id='.$iid.'">Return to item.</a></div></div>'; }
+			else { $notice = '<div class="panel panel-red"><div class="panel-heading">Error: Couldn\'t update the item details.</div></div>'; }
 		}
 	}
 ?>
@@ -89,8 +90,7 @@
 		<div id="page-wrapper">
 			<div class="row">
 				<div class="col-lg-12">
-					<h1 class="page-header">Price Tracker - Item Details</h1>
-					<?PHP if (!empty($notice)) { print $notice; } ?>
+					<h1 class="page-header">Price Tracker - Update Item Price</h1>
 				</div>
 				<!-- /.col-lg-12 -->
 			</div>
@@ -101,19 +101,19 @@
 
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							Items listing.
+							Item Details.
 						</div>
 						<!-- /.panel-heading -->
 						<div class="panel-body">
 							<?php
-								if (!empty($_GET['id'])) {
-									$iid = $_GET['id'];
+								$item = '-'; $cat = '-'; $details = '-';
+								if (!empty($_GET['id']) && !empty($_GET['iid'])) {
+
+									# Display Header Informations
 									$sql = "SELECT * FROM `items` WHERE `iid` = '$iid'";
 									$result = mysqli_query($link, $sql);
-									if (mysqli_num_rows($result) < 1) { $data = '<tr><td colspan="7">No data to display.</td></tr>'; }
-									else {
+									if (mysqli_num_rows($result) > 0) {
 										while($row = mysqli_fetch_assoc($result)) {
-											$iid = $row['iid'];
 											$item = $row['name'];
 											$details = isset($row['details']) ? $row['details'] : '';
 											$cid = isset($row['cat']) ? $row['cat'] : '';
@@ -129,48 +129,34 @@
 											}
 											else { $cat = ""; }
 										}
-										
-										$data = '';
-										$sql2 = "SELECT * FROM `items_price` WHERE iid = '$iid ' ORDER BY `unit_price` ASC";
-										$result2 = mysqli_query($link, $sql2);
-										if (mysqli_num_rows($result2) > 0) {
-											while($row2 = mysqli_fetch_assoc($result2)) {
-												$eid = $row2['id'];
-												$price = $row2['price'];
-												$pricedesc = $row2['price_desc'];
-												$unitprice = $row2['unit_price'];
-												$unitdesc = $row2['unit_desc'];
-												$unit = $row2['unit'];
-												$pid = $row2['pid'];
-												$url = $row2['url'];
-												$note = $row2['note'];
-												$lastupdate = $row2['last_update'];
-												
-												if (empty($url)) { $url = '#'; }
+									}
 
-												if (empty($note)) { $note_icon = 'fa-comment-o'; }
-												if (!empty($note)) { $note_icon = 'fa-commenting'; }
+									# Display
+									$sql = "SELECT * FROM `items_price` WHERE `id` = '$id'";
+									$result = mysqli_query($link, $sql);
+									if (mysqli_num_rows($result) > 0) {
+										while($row = mysqli_fetch_assoc($result)) {
+											$pid = $row['pid'];
+											$price = $row['price'];
+											$pricedesc = $row['price_desc'];
+											$unit = $row['unit'];
+											$unitdesc = $row['unit_desc'];
+											$unitprice = $row['unit_price'];
+											$note = isset($row['note']) ? $row['note'] : '';
+											$url = isset($row['url']) ? $row['url'] : '';
 
-												if (!empty($pid)) {
-													$sql3 = "SELECT * FROM `providers` WHERE pid = '". $pid ."'";
-													$result3 = mysqli_query($link, $sql3);
-													if (mysqli_num_rows($result3) > 0) {
-														while($row3 = mysqli_fetch_assoc($result3)) {
-															$prov = $row3['name'];
-														}
+											if (!empty($pid)) {
+												$sql2 = "SELECT * FROM `providers` WHERE pid = '". $pid ."'";
+												$result2 = mysqli_query($link, $sql2);
+												if (mysqli_num_rows($result2) > 0) {
+													while($row2 = mysqli_fetch_assoc($result2)) {
+														$prov = $row2['name'];
 													}
 												}
-												else { $prov = "No provider"; }
-												
-												$data .= '<tr><td>'.$prov.'</td><td>'.$price.'$ '.$pricedesc.'</td><td>&nbsp;</td><td>'.$unit.'</td><td>'.$unitprice.'$ '.$unitdesc.'</td><td>'.date("Y-m-d H:i:s", $lastupdate).'</td><td><a href="'.$url.'" title="Visit provider\'s item page"><i class="fa fa-globe fa-2x"></i></a> &nbsp; <a href="pricetracker_item_update.php?id='.$eid.'&iid='.$iid.'" title="Update this provider\'s data"><i class="fa fa-edit fa-2x"></i></a> &nbsp; <a data-toggle="tooltip" data-placement="left" title="'.$note.'"><i class="fa '.$note_icon.' fa-2x"></i></a></td></tr>';
 											}
+											else { $prov = ""; }
 										}
 									}
-								}
-								else {
-									$item = '-';
-									$details = '-';
-									$cat = '-';
 								}
 							?>
 							<div class="row">
@@ -179,93 +165,52 @@
 										<div class="panel-heading">
 											<div class="row">
 												<div class="col-xs-3">
-													<i class="fa fa-info fa-5x"></i>
+													<i class="fa fa-edit fa-5x"></i>
 												</div>
 												<div class="col-xs-9 text-right">
-													<div class="huge"><?PHP print $item; ?></div>
-													<div><?PHP print $cat; ?></div>
+													<div class="huge">&nbsp;</div>
 												</div>
 											</div>
 										</div>
 										<div class="panel-footer">
-											<span class="pull-left"><?PHP print $details; ?></span>
+											<span class="pull-left">
+												<div class="huge"><a href="pricetracker_item.php?id=<?PHP print $iid; ?>"><?PHP print $item; ?></a></div>
+												<div>Category: <?PHP print $cat; ?></div>
+												<div>Detail: <?PHP print $details; ?></div>
+												<div>Provider: <?PHP print $prov; ?></div>
+											</span>
 											<div class="clearfix"></div>
 										</div>
 									</div>
 								</div>
 							</div>
-							<div class="table-responsive">
-								<table class="table table-bordered" width="100%" id="dataTable" cellspacing="0">
-									<thead>
-										<tr>
-											<th>Provider</th>
-											<th>Price</th>
-											<th>&nbsp;</th>
-											<th>Unit Qty</th>
-											<th>Unit Price</th>
-											<th>Last Update</th>
-											<th>Actions</th>
-										</tr>
-									</thead>
-									<tfoot>
-										<tr>
-											<th>Provider</th>
-											<th>Price</th>
-											<th>&nbsp;</th>
-											<th>Unit Qty</th>
-											<th>Unit Price</th>
-											<th>Last Update</th>
-											<th>Actions</th>
-										</tr>
-									</tfoot>
-									<tbody>
-										<?PHP print $data; ?>
-									</tbody>
-								</table>
-							</div>
-							<br>
 							<div class="row">
 								<div class="col-lg-12 col-md-6">
 									<div class="panel panel-primary">
 										<div class="panel-heading">
-											<a id="new"></a>New Data
+											Details to edit
 										</div>
 										<div class="panel-body">
+											<?PHP if (!empty($notice)) { print $notice; } ?>
 											<form role="form" method="post">
 												<div class="form-group">
-													<label>Provider</label>
-													<select class="form-control" name="provider">
-														<?php
-															$sql = "SELECT * FROM `providers` ORDER BY `name` ASC";
-															$result = mysqli_query($link, $sql);
-															if (mysqli_num_rows($result) < 1) { print ""; }
-															else {
-																while($row = mysqli_fetch_assoc($result)) {
-																	if (empty($p_pid) || $p_pid !== $row['pid']) { print '<option value="'. $row["pid"] .'">' . $row["name"] . '</option>'; }
-																	else { print '<option value="'. $row["pid"] .'" selected="selected">' . $row["name"] . '</option>'; }
-																}
-															}
-														?>
-													</select>
-												</div>
-												<div class="form-group">
 													<label>Price & Packaging description</label>
-													<p class="form-inline"><input class="form-control" placeholder="0.00" name="price" value="<?PHP if (!empty($_POST['price'])) { print $_POST['price']; } ?>"><i class="fa fa-usd fa-1x"></i>  <input class="form-control" placeholder="Per Box of 20" name="pricedesc" value="<?PHP if (!empty($_POST['pricedesc'])) { print $_POST['pricedesc']; } ?>"></p>
+													<p class="form-inline"><input class="form-control" placeholder="0.00" name="price" value="<?PHP if (!empty($price)) { print $price; } ?>"><i class="fa fa-usd fa-1x"></i>  <input class="form-control" placeholder="" name="pricedesc" value="<?PHP if (!empty($pricedesc)) { print $pricedesc; } ?>"></p>
 													<p class="help-block">ex: 25.50$ per box of 20</p>
 												</div>
 												<div class="form-group">
 													<label>Unit & Unit price description</label>
-													<p class="form-inline"><input class="form-control" placeholder="1" name="unit" value="<?PHP if (!empty($_POST['unit'])) { print $_POST['unit']; } ?>"> <input class="form-control" placeholder="Per Unit" name="unitdesc" value="<?PHP if (!empty($_POST['unitdesc'])) { print $_POST['unitdesc']; } ?>"></p>
+													<p class="form-inline"><input class="form-control" placeholder="1" name="unit" value="<?PHP if (!empty($unit)) { print $unit; } ?>"> <input class="form-control" placeholder="Per Unit" name="unitdesc" value="<?PHP if (!empty($unitdesc)) { print $unitdesc; } ?>"></p>
 													<p class="help-block">ex: 20 | Per Stick </p>
 												</div>
 												<div class="form-group">
 													<label>URL</label>
-													<input class="form-control" placeholder="http://www.website.com/product.html" type="url" name="url" value="<?PHP if (!empty($_POST['url'])) { print $_POST['url']; } ?>">
+													<input class="form-control" placeholder="http://www.website.com/product.html" type="url" name="url" value="<?PHP if (!empty($url)) { print $url; } ?>">
 													<p class="help-block">Input URL of the product from the provider website. </p>
 												</div>
 												<div class="form-group">
 													<label>Note:</label>
-													<textarea name="note" class="form-control"><?PHP if (!empty($_POST['note'])) { print $_POST['note']; } ?></textarea>
+													<textarea name="note" class="form-control"><?PHP if (!empty($note)) { print $note; } ?></textarea>
 												</div>
 												<button type="submit" class="btn btn-default">Submit</button>
 											</form>
