@@ -162,7 +162,7 @@
 												}
 												else { $prov = "No provider"; }
 												
-												$data .= '<tr><td>'.$prov.'</td><td>'.$price.'$ '.$pricedesc.'</td><td>&nbsp;</td><td>'.$unit.'</td><td>'.$unitprice.'$ '.$unitdesc.'</td><td>'.date("Y-m-d H:i:s", $lastupdate).'</td><td><a href="'.$url.'" title="Visit provider\'s item page"><i class="fa fa-globe fa-2x"></i></a> &nbsp; <a href="pricetracker_item_update.php?id='.$eid.'&iid='.$iid.'" title="Update this provider\'s data"><i class="fa fa-edit fa-2x"></i></a> &nbsp; <a data-toggle="tooltip" data-placement="left" title="'.$note.'"><i class="fa '.$note_icon.' fa-2x"></i></a></td></tr>';
+												$data .= '<tr><td>'.$prov.'</td><td>'.$price.'$ '.$pricedesc.'</td><td>&nbsp;</td><td>'.$unit.'</td><td>'.$unitprice.'$ '.$unitdesc.'</td><td>'.date("Y-m-d H:i:s", $lastupdate).'</td><td><a href="'.$url.'" title="Visit provider\'s item page" target="_BLANK"><i class="fa fa-globe fa-2x"></i></a> &nbsp; <a href="pricetracker_item_update.php?id='.$eid.'&iid='.$iid.'" title="Update this provider\'s data"><i class="fa fa-edit fa-2x"></i></a> &nbsp; <a data-toggle="tooltip" data-placement="left" title="'.$note.'"><i class="fa '.$note_icon.' fa-2x"></i></a></td></tr>';
 											}
 										}
 									}

@@ -17,10 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `massgroupbuy`
---
-CREATE DATABASE IF NOT EXISTS `massgroupbuy` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `massgroupbuy`;
+--;
 
 -- --------------------------------------------------------
 
