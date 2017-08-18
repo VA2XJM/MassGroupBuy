@@ -17,6 +17,7 @@
 		if (empty($_POST['price']) || empty($_POST['unit'])) { $notice = '<div class="panel panel-red"><div class="panel-heading">Error: Price & Unit are mandatory</div></div>'; }
 		elseif (!is_numeric($_POST['price']) || !is_numeric($_POST['unit'])) { $notice = '<div class="panel panel-red"><div class="panel-heading">Error: Price & Unit must be numerical</div></div>'; }
 		else {
+			$p_provider = $_POST['provider'];
 			$p_price = $_POST['price'];
 			$p_pricedesc = $_POST['pricedesc'];
 			$p_unit  = $_POST['unit'];
@@ -28,7 +29,7 @@
 			
 			# Execute MySQL. If there is not error show green panel and notification.
 			# Else show red panel and error notification.
-			$sql = "UPDATE `items_price` SET `price`='$p_price', `price_desc`='$p_pricedesc', `unit`='$p_unit', `unit_desc`='$p_unitdesc', `unit_price`='$x_unitprice', `url`='$p_url', `note`='$p_note', `last_update`='$lastupdate' WHERE `id`='$id'";
+			$sql = "UPDATE `items_price` SET `pid`='$p_provider', `price`='$p_price', `price_desc`='$p_pricedesc', `unit`='$p_unit', `unit_desc`='$p_unitdesc', `unit_price`='$x_unitprice', `url`='$p_url', `note`='$p_note', `last_update`='$lastupdate' WHERE `id`='$id'";
 			$result = mysqli_query($link, $sql);
 			if ($result) { $notice = '<div class="panel panel-green"><div class="panel-heading">Details has been updated.</div><div class="panel-footer"><a href="pricetracker_item.php?id='.$iid.'">Return to item.</a></div></div>'; }
 			else { $notice = '<div class="panel panel-red"><div class="panel-heading">Error: Couldn\'t update the item details.</div></div>'; }
@@ -193,6 +194,22 @@
 										<div class="panel-body">
 											<?PHP if (!empty($notice)) { print $notice; } ?>
 											<form role="form" method="post">
+												<div class="form-group">
+													<label>Provider</label>
+													<select class="form-control" name="provider">
+														<?php
+															$sql = "SELECT * FROM `providers` ORDER BY `name` ASC";
+															$result = mysqli_query($link, $sql);
+															if (mysqli_num_rows($result) < 1) { print ""; }
+															else {
+																while($row = mysqli_fetch_assoc($result)) {
+																	if (empty($pid) || $pid !== $row['pid']) { print '<option value="'. $row["pid"] .'">' . $row["name"] . '</option>'; }
+																	else { print '<option value="'. $row["pid"] .'" selected="selected">' . $row["name"] . '</option>'; }
+																}
+															}
+														?>
+													</select>
+												</div>
 												<div class="form-group">
 													<label>Price & Packaging description</label>
 													<p class="form-inline"><input class="form-control" placeholder="0.00" name="price" value="<?PHP if (!empty($price)) { print $price; } ?>"><i class="fa fa-usd fa-1x"></i>  <input class="form-control" placeholder="" name="pricedesc" value="<?PHP if (!empty($pricedesc)) { print $pricedesc; } ?>"></p>
