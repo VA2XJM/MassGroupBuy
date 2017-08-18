@@ -165,11 +165,8 @@
 									<div class="panel panel-primary">
 										<div class="panel-heading">
 											<div class="row">
-												<div class="col-xs-3">
-													<i class="fa fa-edit fa-5x"></i>
-												</div>
-												<div class="col-xs-9 text-right">
-													<div class="huge">&nbsp;</div>
+												<div class="col-xs-12">
+													<i class="fa fa-edit fa-1x"></i> Item to edit
 												</div>
 											</div>
 										</div>
