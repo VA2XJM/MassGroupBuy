@@ -18,6 +18,7 @@
 		else {
 			while($row = mysqli_fetch_assoc($result)) {
 				if ($row['password'] !== $_POST['password']) { $error = 1; }
+				elseif ($row['disabled'] == '1') { $error = 2; }
 				else {
 					$_SESSION['username'] = $_POST['username'];
 					$_SESSION['role'] = $row['role'];
@@ -77,9 +78,8 @@
                         <form role="form" action="login.php" method="post">
                             <fieldset>
 				<?PHP
-				if (!empty($error)) { print '<div class="form-group">
-                                    <span style="color: #FF0000;">Wrong username or password.</span>
-                                </div>'; }
+					if (!empty($error) && $error == '1') { print '<div class="form-group"><span style="color: #FF0000;">Wrong username or password.</span></div>'; }
+					elseif (!empty($error) && $error == '2') { print '<div class="form-group"><span style="color: #FF0000;">Your account has been suspended.</span></div>'; }
 				?>
                                 <div class="form-group">
                                     <input class="form-control" placeholder="Username" name="username" type="text" autofocus>

@@ -13,14 +13,16 @@
 			<ul class="nav navbar-top-links navbar-right">
 				<li class="dropdown">
 					<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-						<i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>
+						<i class="fa fa-exclamation fa-fw"></i>&nbsp;
+						<span class="badge badge-pill badge-primary">12 New</span>&nbsp;
+						<i class="fa fa-caret-down"></i>
 					</a>
 
-					<ul class="dropdown-menu dropdown-tasks">
+					<ul class="dropdown-menu dropdown-messages">
 
 						<li>
 							<a class="text-center" href="orders.php">
-								<strong>See All orders</strong>
+								<strong>See All notifications</strong>
 								<i class="fa fa-angle-right"></i>
 							</a>
 						</li>
@@ -36,7 +38,7 @@
 						<i class="fa fa-star fa-fw"></i>  <i class="fa fa-caret-down"></i>
 					</a>
 					<ul class="dropdown-menu dropdown-user">
-						<li><a href="admin.php"><i class="fa fa-area-chart fa-fw"></i> Admin</a></li>
+						<li><a href="admin_users.php"><i class="fa fa-user fa-fw"></i> User Management</a></li>
 					</ul>
 					<!-- /.dropdown-user -->
 				</li>
