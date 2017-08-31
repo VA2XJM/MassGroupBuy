@@ -83,7 +83,7 @@
 			if  ($disabled == '2') { $delete = ''; }
 			else { $delete = '<a href="admin_users.php?id='.$uid.'&action=delete" title="Delete this user" onclick="return confirm(\'Are you certain you wish to delete this user?\')"><i class="fa fa-times fa-2x"></i></a>'; }
 				
-			$data .= '<tr><td>'.$username.'</td> <td>'.$email.'</td> <td>'.$namef.' '.$namel.'</td> <td>'.$location.'</td> <td>'.$rating.'</td> <td>'.$role.'</td> <td>'.$lastact.'<br><small>'.$lastactnote.'</small></td> <td>'.$toggle.' &nbsp; '.$delete.'</td></tr>';
+			$data .= '<tr><td>'.$username.'</td> <td>'.$email.'</td> <td>'.$namef.' '.$namel.'</td> <td>'.$location.'</td> <td>'.$rating.'</td> <td>'.$role.'</td> <td>'.date("Y-m-d H:i:s", $lastact).'<br><small>'.$lastactnote.'</small></td> <td>'.$toggle.' &nbsp; '.$delete.'</td></tr>';
 		}
 	}
 ?>

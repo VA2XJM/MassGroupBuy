@@ -70,7 +70,7 @@
 			<!-- /.row -->
 			<div class="row">
 				<div class="col-lg-12">
-					&nbsp;
+					<?PHP if (!empty($_SESSION['notice'])) { print $_SESSION['notice']; $_SESSION['notice'] = ''; } else { print '&nbsp;'; } ?>
 				</div>
 				<!-- /.col-lg-12 -->
 			</div>
