@@ -9,13 +9,6 @@
 	$conf['mysql']['password'] = 'vertrigo';
 	$conf['mysql']['database'] = 'massgroupbuy';
 
-	# Users
-	# $conf['user']['<username>']['<name/password/role>']
-	# Roles: admin, user or scanner
-	$conf['user']['admin']['name'] = 'Admin';
-	$conf['user']['admin']['password'] = 'password';
-	$conf['user']['admin']['role'] = 'admin';
-
 	####################################################################################
 
 	# Do not change settings below, this could break your setup and result in data loss. 

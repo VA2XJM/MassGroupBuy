@@ -12,13 +12,21 @@
 	# If username and password is provided, identity is validated.
 	if (!empty($_POST['username']) && !empty($_POST['password'])) {
 		$username = $_POST['username'];
-		if (!empty($conf['user'][$username]['password']) && $conf['user'][$username]['password'] == $_POST['password']) {
-			$_SESSION['username'] = $_POST['username'];
-			$_SESSION['role'] = $conf['user'][$username]['role'];
-			$_SESSION['name'] = $conf['user'][$username]['name'];
-			header('location:index.php');
+		$sql = "SELECT * FROM `users` WHERE `username` = '$username'";
+		$result = mysqli_query($link, $sql);
+		if (mysqli_num_rows($result) < 1) { $error = 1; }
+		else {
+			while($row = mysqli_fetch_assoc($result)) {
+				if ($row['password'] !== $_POST['password']) { $error = 1; }
+				else {
+					$_SESSION['username'] = $_POST['username'];
+					$_SESSION['role'] = $row['role'];
+					$_SESSION['name'] = $row['name_first'] .' '. $row['name_last'];
+					$_SESSION['id'] = $row['uid'];
+					header('location:index.php');
+				}
+			}
 		}
-		else { $error = 1; }
 	}
 ?>
 
