@@ -23,7 +23,7 @@
 					$_SESSION['username'] = $_POST['username'];
 					$_SESSION['role'] = $row['role'];
 					$_SESSION['name'] = $row['name_first'] .' '. $row['name_last'];
-					$_SESSION['id'] = $row['uid'];
+					$_SESSION['uid'] = $row['uid'];
 					if ($row['last_activity'] > 0) { header('location:index.php'); }
 					else { header('location:login_firsttime.php'); }
 				}

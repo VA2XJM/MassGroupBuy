@@ -10,18 +10,31 @@
 			</div>
 			<!-- /.navbar-header -->
 
+			<?PHP
+				$sql = "SELECT * FROM `notifications` WHERE `readed`='0' AND `deleted`='0' AND `uid`='".$_SESSION['uid']."' ORDER BY `time` DESC";
+				$result = mysqli_query($link, $sql);
+				$notifs = mysqli_num_rows($result);
+				if ($notifs < 1) { $notifications = '<li>No new notifications.</li>'; }
+				else {
+					$notifications = '';
+					while($row = mysqli_fetch_assoc($result)) {
+						$notifications = '<li><a href="#"><div><i class="fa fa-comment fa-fw"></i> New Comment<span class="pull-right text-muted small">4 minutes ago</span></div></a></li>';
+					}
+				}
+			?>
 			<ul class="nav navbar-top-links navbar-right">
 				<li class="dropdown">
 					<a class="dropdown-toggle" data-toggle="dropdown" href="#">
 						<i class="fa fa-exclamation fa-fw"></i>&nbsp;
-						<span class="badge badge-pill badge-primary">12 New</span>&nbsp;
+						<?PHP if ($notifs > 1) { print '<span class="badge badge-pill badge-primary">'.$notifs.' New</span>&nbsp;'; } ?>
 						<i class="fa fa-caret-down"></i>
 					</a>
 
-					<ul class="dropdown-menu dropdown-messages">
-
+                    			<ul class="dropdown-menu dropdown-alerts">
+						<?PHP print $notifications; ?>
+						<li class="divider"></li>
 						<li>
-							<a class="text-center" href="orders.php">
+							<a class="text-center" href="notifications.php">
 								<strong>See All notifications</strong>
 								<i class="fa fa-angle-right"></i>
 							</a>
