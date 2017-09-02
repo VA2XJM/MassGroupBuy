@@ -126,7 +126,7 @@
 												else { $cat = ""; }
 
 												# Get best price
-												$sql2 = "SELECT * FROM `items_price` WHERE iid = '". $iid ."' ORDER BY `unit_price` ASC LIMIT 1";
+												$sql2 = "SELECT DISTINCT(pid) FROM `items_price` WHERE iid = '". $iid ."' ORDER BY `unit_price` ASC LIMIT 1";
 												$result2 = mysqli_query($link, $sql2);
 												if (mysqli_num_rows($result2) > 0) {
 													while($row2 = mysqli_fetch_assoc($result2)) {
