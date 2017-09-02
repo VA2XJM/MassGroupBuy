@@ -125,6 +125,7 @@
 												}
 												else { $cat = ""; }
 
+												# Get best price
 												$sql2 = "SELECT * FROM `items_price` WHERE iid = '". $iid ."' ORDER BY `unit_price` ASC LIMIT 1";
 												$result2 = mysqli_query($link, $sql2);
 												if (mysqli_num_rows($result2) > 0) {
@@ -136,12 +137,22 @@
 												}
 												else { $bestprice = '-'; $bestunit = ''; $bestpriceprov = '-'; $bppid = ''; }
 
-												if (!empty($bppid)) {
-													$sql2 = "SELECT * FROM `providers` WHERE pid = '". $bppid ."'";
+												#If there is a price, find all providers with this unit price.
+												if (!empty($bestprice)) {
+													$bestpriceprov = '';
+													$sql2 = "SELECT * FROM `items_price` WHERE unit_price = '". $bestprice ."'";
 													$result2 = mysqli_query($link, $sql2);
 													if (mysqli_num_rows($result2) > 0) {
 														while($row2 = mysqli_fetch_assoc($result2)) {
-															$bestpriceprov = $row2['name'];
+															$bppid = $row2['pid'];
+															$sql3 = "SELECT * FROM `providers` WHERE pid = '". $bppid ."'";
+															$result3 = mysqli_query($link, $sql3);
+															if (mysqli_num_rows($result3) > 0) {
+																while($row3 = mysqli_fetch_assoc($result3)) {
+																	if (!empty($bestpriceprov)) { $bestpriceprov .= ', '; }
+																	$bestpriceprov .= $row3['name'];
+																}
+															}
 														}
 													}
 												}
