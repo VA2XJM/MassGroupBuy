@@ -140,7 +140,7 @@
 												#If there is a price, find all providers with this unit price.
 												if (!empty($bestprice)) {
 													$bestpriceprov = '';
-													$sql2 = "SELECT * FROM `items_price` WHERE unit_price = '". $bestprice ."'";
+													$sql2 = "SELECT * FROM `items_price` WHERE `iid` = '".$iid."' AND  unit_price = '". $bestprice ."'";
 													$result2 = mysqli_query($link, $sql2);
 													if (mysqli_num_rows($result2) > 0) {
 														while($row2 = mysqli_fetch_assoc($result2)) {
@@ -149,8 +149,9 @@
 															$result3 = mysqli_query($link, $sql3);
 															if (mysqli_num_rows($result3) > 0) {
 																while($row3 = mysqli_fetch_assoc($result3)) {
+																	$provname = $row3['name'];
 																	if (!empty($bestpriceprov)) { $bestpriceprov .= ', '; }
-																	$bestpriceprov .= $row3['name'];
+																	$bestpriceprov .= $provname;
 																}
 															}
 														}
