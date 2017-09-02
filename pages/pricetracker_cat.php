@@ -126,13 +126,12 @@
 												else { $cat = ""; }
 
 												# Get best price
-												$sql2 = "SELECT DISTINCT(pid) FROM `items_price` WHERE iid = '". $iid ."' ORDER BY `unit_price` ASC LIMIT 1";
+												$sql2 = "SELECT * FROM `items_price` WHERE iid = '". $iid ."' ORDER BY `unit_price` ASC LIMIT 1";
 												$result2 = mysqli_query($link, $sql2);
 												if (mysqli_num_rows($result2) > 0) {
 													while($row2 = mysqli_fetch_assoc($result2)) {
 														$bestprice = $row2['unit_price'];
 														$bestunit = $row2['unit_desc'];
-														$bppid = $row2['pid'];
 													}
 												}
 												else { $bestprice = '-'; $bestunit = ''; $bestpriceprov = '-'; $bppid = ''; }
@@ -140,12 +139,12 @@
 												#If there is a price, find all providers with this unit price.
 												if (!empty($bestprice)) {
 													$bestpriceprov = '';
-													$sql2 = "SELECT * FROM `items_price` WHERE `iid` = '".$iid."' AND  unit_price = '". $bestprice ."'";
+													$sql2 = "SELECT DISTINCT(pid) FROM `items_price` WHERE `iid` = '".$iid."' AND  unit_price = '". $bestprice ."'";
 													$result2 = mysqli_query($link, $sql2);
 													if (mysqli_num_rows($result2) > 0) {
 														while($row2 = mysqli_fetch_assoc($result2)) {
 															$bppid = $row2['pid'];
-															$sql3 = "SELECT * FROM `providers` WHERE pid = '". $bppid ."'";
+															$sql3 = "SELECT * FROM `providers` WHERE pid = '$bppid'";
 															$result3 = mysqli_query($link, $sql3);
 															if (mysqli_num_rows($result3) > 0) {
 																while($row3 = mysqli_fetch_assoc($result3)) {
@@ -171,7 +170,7 @@
 								}
 							?>
 							<div class="table-responsive">
-								<table class="table table-bordered" width="100%" id="dataTable" cellspacing="0">
+								<table class="table table-bordered" width="100%" id="xdataTable" cellspacing="0">
 									<thead>
 										<tr>
 											<th>Items</th>
@@ -230,6 +229,11 @@
 	<script src="../dist/js/dataTables.bootstrap4.js"></script>
 	<script src="../dist/js/jquery.dataTables.js"></script>
 
+	<script>
+		$(document).ready(function(){
+			$('#xdataTable').dataTable({"lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]]});
+		});
+	</script>
 </body>
 
 </html>

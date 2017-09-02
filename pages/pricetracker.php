@@ -52,7 +52,6 @@
 		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
 		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 	<![endif]-->
-
 </head>
 
 <body>
@@ -146,7 +145,7 @@
 								}
 							?>
 							<div class="table-responsive">
-								<table class="table table-bordered" width="100%" id="dataTable" cellspacing="0">
+								<table class="table table-bordered" width="100%" id="xdataTable" cellspacing="0">
 									<thead>
 										<tr>
 											<th>Items</th>
@@ -205,6 +204,11 @@
 	<script src="../dist/js/dataTables.bootstrap4.js"></script>
 	<script src="../dist/js/jquery.dataTables.js"></script>
 
+	<script>
+		$(document).ready(function(){
+			$('#xdataTable').dataTable({"lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]]});
+		});
+	</script>
 </body>
 
 </html>
