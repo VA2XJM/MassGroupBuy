@@ -106,7 +106,7 @@
 									$iid = $_GET['id'];
 									$sql = "SELECT * FROM `items` WHERE `iid` = '$iid'";
 									$result = mysqli_query($link, $sql);
-									if (mysqli_num_rows($result) < 1) { $data = '<tr><td colspan="7">No data to display.</td></tr>'; }
+									if (mysqli_num_rows($result) < 1) { $data = 'No data to display.'; }
 									else {
 										while($row = mysqli_fetch_assoc($result)) {
 											$iid = $row['iid'];
