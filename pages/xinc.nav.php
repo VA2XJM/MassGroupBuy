@@ -91,15 +91,6 @@
 									<a href="orders.php">Orders Overview</a>
 								</li>
 								<li>
-									<a href="orders_open.php">Open Orders</a>
-								</li>
-								<li>
-									<a href="orders_close.php">Closed Orders</a>
-								</li>
-								<li>
-									<a href="orders_done.php">Done Orders</a>
-								</li>
-								<li>
 									<a href="orders_new.php">New Orders</a>
 								</li>
 							</ul>
