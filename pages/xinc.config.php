@@ -2,6 +2,9 @@
 	# PrepInventory Configuration File
 	# 
 	# Change settings below only if you know what you are doing.
+
+	# Title
+	$g_title = 'MassGroupBuy';
 	
 	# MySQL - Set to use your MySQL database
 	$conf['mysql']['address'] = '127.0.0.1';

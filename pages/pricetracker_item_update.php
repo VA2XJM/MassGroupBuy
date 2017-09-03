@@ -47,7 +47,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
-	<title>MassGroupBuy</title>
+	<title><?PHP print $g_title; ?></title>
 	
 	<!-- PrepInventory CSS -->
 	<link href="../dist/css/PrepInventory.css" rel="stylesheet">

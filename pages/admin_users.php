@@ -98,7 +98,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
-	<title>MassGroupBuy - Admin - Users Management</title>
+	<title><?PHP print $g_title; ?> - Admin - Users Management</title>
 	
 	<!-- PrepInventory CSS -->
 	<link href="../dist/css/PrepInventory.css" rel="stylesheet">

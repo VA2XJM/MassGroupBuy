@@ -6,7 +6,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="index.php">MassGroupBuy <?PHP print $g_version; ?></a>
+				<a class="navbar-brand" href="index.php"><?PHP print $g_title; ?></a>
 			</div>
 			<!-- /.navbar-header -->
 
@@ -138,6 +138,9 @@
 						<li>
 							<a href="#"><i class="fa fa-support fa-fw"></i> Help & About<span class="fa arrow"></span></a>
 							<ul class="nav nav-second-level">
+								<li>
+									<a href="https://github.com/xJMV/MassGroupBuy" target="_BLANK">MassGroupBuy <?PHP print $g_version; ?></a>
+								</li>
 								<li>
 									<a href="https://github.com/xJMV/MassGroupBuy" target="_BLANK">GitHub</a>
 								</li>
