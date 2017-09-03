@@ -100,10 +100,6 @@
 					<!-- CODE -->
 
 					<div class="panel panel-default">
-						<div class="panel-heading">
-							Items listing.
-						</div>
-						<!-- /.panel-heading -->
 						<div class="panel-body">
 							<?php
 								if (!empty($_GET['id'])) {
