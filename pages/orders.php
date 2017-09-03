@@ -9,18 +9,6 @@
 		header('location:login.php');
 		die();
 	}
-
-	/*
-		Internal Docs
-
-			MYSQL Structure
-				OID : Order ID
-				Status:	1: Open. 2: Closed. 3: Pending Funds. 4: Ordered. 5: In Transit 6: Arrived 7: Completed and Done
-				Provider: Provider ID
-				Creator: Username of the person responssible of the order
-				closing: date/time for others to add items to order
-				details: Whatever instructions creator of the order wish to indicate
-	*/
 ?>
 
 <!DOCTYPE html>
@@ -91,93 +79,95 @@
 						<!-- /.panel-heading -->
 						<div class="panel-body">
 							<div class="row">
-								<div class="col-lg-3 col-md-6">
-									<div class="panel panel-primary">
-										<div class="panel-heading">
-											<div class="row">
-												<div class="col-xs-3">
-													<i class="fa fa-user fa-5x"></i>
-												</div>
-												<div class="col-xs-9 text-right">
-													<div class="huge">26</div>
-													<div>Your Orders!</div>
-												</div>
-											</div>
-										</div>
-										<a href="#myorders">
-											<div class="panel-footer">
-												<span class="pull-left">View Details</span>
-												<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-												<div class="clearfix"></div>
-											</div>
-										</a>
-									</div>
-								</div>
-								<div class="col-lg-3 col-md-6">
-									<div class="panel panel-green">
-										<div class="panel-heading">
-											<div class="row">
-												<div class="col-xs-3">
-													<i class="fa fa-hourglass-start fa-5x"></i>
-												</div>
-												<div class="col-xs-9 text-right">
-													<div class="huge">12</div>
-													<div>Open Orders!</div>
-												</div>
-											</div>
-										</div>
-										<a href="#">
-											<div class="panel-footer">
-												<span class="pull-left">View Details</span>
-												<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-												<div class="clearfix"></div>
-											</div>
-										</a>
-									</div>
-								</div>
-								<div class="col-lg-3 col-md-6">
-									<div class="panel panel-yellow">
-										<div class="panel-heading">
-											<div class="row">
-												<div class="col-xs-3">
-													<i class="fa fa-hourglass-half fa-5x"></i>
-												</div>
-												<div class="col-xs-9 text-right">
-													<div class="huge">124</div>
-													<div>Closed Orders!</div>
-												</div>
-											</div>
-										</div>
-										<a href="#">
-											<div class="panel-footer">
-												<span class="pull-left">View Details</span>
-												<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-												<div class="clearfix"></div>
-											</div>
-										</a>
-									</div>
-								</div>
-								<div class="col-lg-3 col-md-6">
-									<div class="panel panel-red">
-										<div class="panel-heading">
-											<div class="row">
-												<div class="col-xs-3">
-													<i class="fa fa-hourglass-end fa-5x"></i>
-												</div>
-												<div class="col-xs-9 text-right">
-													<div class="huge">13</div>
-													<div>Done Orders!</div>
-												</div>
-											</div>
-										</div>
-										<a href="#">
-											<div class="panel-footer">
-												<span class="pull-left">View Details</span>
-												<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-												<div class="clearfix"></div>
-											</div>
-										</a>
-									</div>
+								<center><b>View orders:</b> <a href="orders.php?view=open">Open</a> - <a href="orders.php?view=closed">Closed</a> - <a href="orders.php?view=inprogress">In Progress</a> - <a href="orders.php?view=completed">Completed</a> - <a href="orders.php?view=bo">Back Ordered</a> - <a href="orders.php?view=canceled">Canceled</a> - <a href="orders.php?view=all">All</a> - <a href="orders.php">Default</a></center>
+							</div>
+							<div class="row">
+								<?php
+									if (!empty($_GET['view']) && $_GET['view'] == 'all') { $sql = "SELECT * FROM `orders`"; }
+									elseif (!empty($_GET['view']) && $_GET['view'] == 'open') { $sql = "SELECT * FROM `orders` WHERE `status` = '1'"; }
+									elseif (!empty($_GET['view']) && $_GET['view'] == 'closed') { $sql = "SELECT * FROM `orders` WHERE `status` = '2'"; }
+									elseif (!empty($_GET['view']) && $_GET['view'] == 'inprogress') { $sql = "SELECT * FROM `orders` WHERE `status` > '2' AND `status` < '9'"; }
+									elseif (!empty($_GET['view']) && $_GET['view'] == 'completed') { $sql = "SELECT * FROM `orders` WHERE `status` = '9'"; }
+									elseif (!empty($_GET['view']) && $_GET['view'] == 'bo') { $sql = "SELECT * FROM `orders` WHERE `status` = '10'"; }
+									elseif (!empty($_GET['view']) && $_GET['view'] == 'canceled') { $sql = "SELECT * FROM `orders` WHERE `status` = '11'"; }
+									else { $sql = "SELECT * FROM `orders`"; } ### Filter only orders linked to user account (User is creator or item ordered)
+
+									$data = '';
+									$result = mysqli_query($link, $sql);
+									if (mysqli_num_rows($result) < 1) { $data = '<tr><td colspan="5">No data to display.</td></tr>'; }
+									else {
+										while($row = mysqli_fetch_assoc($result)) {
+											$oid = $row['oid'];
+											$pid = $row['provider'];
+											$uid = $row['creator'];
+											$status = $row['status'];
+											$closing = $row['closing'];
+											$visibility = $row['visibility'];
+											$visibility_group = $row['visibility_group'];
+
+											# Status Name
+											if ($status == '1') { $status = 'Open'; }
+											elseif ($status == '2') { $status = 'Closed'; }
+											elseif ($status == '3') { $status = 'Pending Funds'; }
+											elseif ($status == '4') { $status = 'Ordered'; }
+											elseif ($status == '5') { $status = 'In Transit'; }
+											elseif ($status == '6') { $status = 'Arrived'; }
+											elseif ($status == '7') { $status = 'Delivering'; }
+											elseif ($status == '8') { $status = 'Delivered'; }
+											elseif ($status == '9') { $status = 'Completed'; }
+											elseif ($status == '10') { $status = 'Back Ordered'; }
+											elseif ($status == '11') { $status = 'Canceled'; }
+											else { $status = 'Unknown'; }
+
+											# Provider Name
+											$sql2 = "SELECT * FROM `providers` WHERE pid = '". $pid ."' LIMIT 1";
+											$result2 = mysqli_query($link, $sql2);
+											if (mysqli_num_rows($result2) > 0) {
+												while($row2 = mysqli_fetch_assoc($result2)) {
+													$provider = $row2['name'];
+												}
+											}
+
+											# Creator Name
+											$sql2 = "SELECT * FROM `users` WHERE uid = '". $uid ."' LIMIT 1";
+											$result2 = mysqli_query($link, $sql2);
+											if (mysqli_num_rows($result2) > 0) {
+												while($row2 = mysqli_fetch_assoc($result2)) {
+													$creator = $row2['name_first'].' '.$row2['name_last'];
+													$creator_rating = $row2['rating'];
+													if (empty($row2['name_first']) && empty($row2['name_last'])) { $creator = $row2['username']; }
+												}
+											}
+
+											if ($visibility == '1') { $data .= '<tr><td><a href="orders_details.php?id='.$oid.'">'.sprintf("%010d", $oid).'</a></td><td>'.$provider.'</td><td>'.$status.'</td><td>'.date("Y-m-d H:i:s", $closing).'</td><td>'.$creator.' ('.$creator_rating.')</td></tr>'; }
+											### Elseif visibility allowed in users permissions, show it anyway. elseif in group visibility, show it too! else, you do not deserve it!
+										}
+									}
+								?>
+								<div class="table-responsive">
+									<table class="table table-bordered" width="90%" id="xdataTable" cellspacing="0">
+										<thead>
+											<tr>
+												<th>Order ID</th>
+												<th>Provider</th>
+												<th>Status</th>
+												<th>Order Closing</th>
+												<th>Creator</th>
+											</tr>
+										</thead>
+										<tfoot>
+											<tr>
+												<th>Order ID</th>
+												<th>Provider</th>
+												<th>Status</th>
+												<th>Order Closing</th>
+												<th>Creator</th>
+											</tr>
+										</tfoot>
+										<tbody>
+											<?PHP print $data; ?>
+										</tbody>
+									</table>
 								</div>
 							</div>
 							<!-- /.row -->
@@ -211,6 +201,11 @@
 	<!-- Custom Theme JavaScript -->
 	<script src="../dist/js/sb-admin-2.js"></script>
 
+	<script>
+		$(document).ready(function(){
+			$('#xdataTable').dataTable({"lengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]], "order": [[ 3, 'asc' ], [ 2, 'asc' ], [4, 'asc' ]]});
+		});
+	</script>
 </body>
 
 </html>
